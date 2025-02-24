@@ -85,9 +85,76 @@ defconfig-explainer [-h] [-m MERGE] [-p PRELOAD] [-k KCONFIG] [-o OUTPUT] [-a AR
 
 ### Example
 
+#### Example 1
+
 ```console
 shell$ cd linux-6.1.108
-shell$ defconfig-explainer --arch arm64 --cross-compile aarch64-linux-gnu- arch/arm64/configs/defconfig
+shell$ defconfig-explainer --arch arm64 --cross-compile aarch64-linux-gnu- arch/arm64/configs/defconfig -o new_defconfig
+```
+
+#### Example 2
+
+```console
+shell$ cd linux-6.1.108
+shell$ cat <<EOT >> add_config
+CONFIG_DMABUF_HEAPS=y
+CONFIG_DMABUF_HEAPS_SYSTEM=y
+CONFIG_DMABUF_HEAPS_CMA=y
+EOT
+shell$ defconfig-explainer --arch arm64 --cross-compile aarch64-linux-gnu- -r -O print-help -O print-location -p arch/arm64/configs/defconfig -m add_defconfig
+## =============================================================================
+## Device Drivers
+## =============================================================================
+## drivers/Kconfig : 2
+##
+
+### ----------------------------------------------------------------------------
+### DMABUF options
+### ----------------------------------------------------------------------------
+### drivers/dma-buf/Kconfig : 2
+###
+
+#### 
+#### DMA-BUF Userland Memory Heaps
+#### 
+#### help
+####     Choose this option to enable the DMA-BUF userland memory heaps.
+####     This options creates per heap chardevs in /dev/dma_heap/ which
+####     allows userspace to allocate dma-bufs that can be shared
+####     between drivers.
+####
+#### drivers/dma-buf/Kconfig : 68
+####
+CONFIG_DMABUF_HEAPS=y
+
+#### end of DMA-BUF Userland Memory Heaps
+
+#### 
+#### DMA-BUF System Heap
+#### 
+#### help
+####     Choose this option to enable the system dmabuf heap. The system heap
+####     is backed by pages from the buddy allocator. If in doubt, say Y.
+####
+#### drivers/dma-buf/heaps/Kconfig : 1
+####
+CONFIG_DMABUF_HEAPS_SYSTEM=y
+
+#### 
+#### DMA-BUF CMA Heap
+#### 
+#### help
+####     Choose this option to enable dma-buf CMA heap. This heap is backed
+####     by the Contiguous Memory Allocator (CMA). If your system has these
+####     regions, you should say Y here.
+####
+#### drivers/dma-buf/heaps/Kconfig : 8
+####
+CONFIG_DMABUF_HEAPS_CMA=y
+
+### end of DMABUF options
+
+## end of Device Drivers
 ```
 
 License
